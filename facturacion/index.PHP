@@ -25,12 +25,14 @@ if (!empty($_SESSION['active']))
 			/* con la funcion mysqli presente evitamos la introduccion de carateres extraños para evitar una inyeccion SQL al formulario */
 			
 			$user = mysqli_real_escape_string($conection,$_POST['usuario']);
-			
+			$actual = date("Y-m-d H:i:s");
 			/* con MD5 encriptamos el contenido de la contraseña */			
 			$pass = md5(mysqli_real_escape_string($conection,$_POST['clave']));
 
 			$query = mysqli_query($conection,"SELECT * FROM usuario WHERE usuario = '$user' AND clave = '$pass'");
+			$query_update = mysqli_query($conection, "UPDATE usuario SET hora_conexion='$actual',online='0' WHERE usuario= '$user'");
 			$result = mysqli_num_rows($query);
+			mysqli_close($conection);
 
 			if ($result > 0)
 			{
@@ -48,9 +50,9 @@ if (!empty($_SESSION['active']))
 
 				$alert = 'El usuario o clave son invalidos';
 				session_destroy();
-
+				
 			}
-
+				
 		}
 	}
 
@@ -65,6 +67,7 @@ if (!empty($_SESSION['active']))
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Sistena Facturación</title>
+	<script type="text/javascript" src="js/functions.js"></script>
     <link rel="stylesheet" type="text/css" href="css./style.css">
 </head>
 <body>

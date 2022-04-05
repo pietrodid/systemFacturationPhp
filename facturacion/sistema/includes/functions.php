@@ -1,5 +1,5 @@
 <?php 
-	date_default_timezone_set('America/Guatemala'); 
+	date_default_timezone_set('America/Mexico_City'); 
 	
 	function fechaC(){
 		$mes = array("","Enero", 
