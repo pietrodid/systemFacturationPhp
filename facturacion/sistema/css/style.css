@@ -166,13 +166,12 @@ nav li ul li:last-child{
 	width: 450px;
 	margin: auto;
 }
-
 .form_register h1{
 	color: #3c93b0;
 }
 hr{
 	border: 0;
-	background: #ccc;
+	background: #CCC;
 	height: 1px;
 	margin: 10px 0;
 	display: block;
@@ -194,11 +193,14 @@ input,select{
 	width: 100%;
 	font-size: 11pt;
 	padding: 5px;
-	border: 1px solid #85020e;
+	border: 1px solid #85929e;
 	border-radius: 5px;
 }
+.notItemOne option:first-child{
+	display: none;
+}
 .btn_save{
-	font-size: 12px;
+	font-size: 12pt;
 	background: #12a4c6;
 	padding: 10px;
 	color: #FFF;
@@ -214,17 +216,16 @@ input,select{
 	margin: 20px auto;
 }
 .msg_error{
-	color:#e20b0b66;
+	color: #e65656;
 }
 .msg_save{
 	color: #126e00;
 }
-.aleret p{
+.alert p{
 	padding: 10px;
 }
 
-/*Lista usuario*/
-
+/*=============== LISTA USUARIO =============*/
 #container h1{
 	font-size: 35px;
 	display: inline-block;
@@ -239,7 +240,7 @@ input,select{
 }
 table{
 	border-collapse: collapse;
-	font-size: 12px;
+	font-size: 12pt;
 	font-family: 'arial';
 	width: 100%;
 }
@@ -247,7 +248,7 @@ table th{
 	text-align: left;
 	padding: 10px;
 	background: #3d7ba8;
-	color: #FFF; 
+	color: #FFF;
 }
 table tr:nth-child(odd){
 	background: #FFF;
@@ -256,10 +257,10 @@ table td{
 	padding: 10px;
 }
 .link_edit{
-	color: blue;
+	color: #0ca4ce;
 }
-.link_edit{
-	color: red;
+.link_delete{
+	color: #f26b6b;
 }
 .data_delete{
 	text-align: center;
@@ -267,44 +268,45 @@ table td{
 .data_delete h2{
 	font-size: 12pt;
 }
-.data_delete p{
+.data_delete span{
 	font-weight: bold;
 	color: #4f72d4;
 	font-size: 12pt;
-}	
-.btn_cancel, .btn_ok{
-	width: 125px;
+}
+.btn_cancel,.btn_ok{
+	width: 124px;
 	background: #478ba2;
 	color: #FFF;
-	display:inline-block;
+	display: inline-block;
 	padding: 5px;
 	border-radius: 5px;
 	cursor: pointer;
 	margin: 15px;
 }
 .btn_cancel{
-	background: green;
+	background: #42b343;
 }
 
 .data_delete form{
+
 	background: initial;
 	margin: auto;
 	padding: 20px 50px;
-	border: 0px; 
+	border: 0;
+
 }
-/*Paginador*/
+/*============ Paginador =============*/
 .paginador ul{
 	padding: 15px;
 	list-style: none;
-	color: #FFF;
+	background: #FFF;
 	margin-top: 15px;
-	display: -webkit-box;
+	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
 	display: -o-flex;
 	display: flex;
-	justify-content: center;
-
+	justify-content: flex-end;
 }
 .paginador a, .pageSelected{
 	color: #428bca;
@@ -322,9 +324,9 @@ table td{
 	background: #428bca;
 	border: 1px solid #428bca;
 }
-/*Buscador*/
+/*============ Buscador ============*/
 .form_search{
-	display: -webkit-box;
+	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
 	display: -o-flex;
@@ -334,7 +336,7 @@ table td{
 	padding: 10px;
 	border-radius: 10px;
 }
-.form_search .btn_searcj{
+.form_search .btn_search{
 	background: #1faac8;
 	color: #FFF;
 	padding: 0 20px;
