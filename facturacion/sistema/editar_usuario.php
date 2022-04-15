@@ -16,7 +16,7 @@
 			$alert='<p class="msg_error">Todos los campos son obligatorios.</p>';
 		}else{
 
-			$idUsuario = $_POST['idUsuario'];
+			$idUsuario = $_POST['id'];
 			$nombre = $_POST['nombre'];
 			$email  = $_POST['correo'];
 			$user   = $_POST['usuario'];
@@ -29,7 +29,7 @@
 													   OR (correo = '$email' AND idusuario != $idUsuario) ");
 
 			$result = mysqli_fetch_array($query);
-
+			
 			if($result > 0){
 				$alert='<p class="msg_error">El correo o el usuario ya existe.</p>';
 			}else{
@@ -63,7 +63,7 @@
 	//Mostrar Datos
 	if(empty($_REQUEST['id']))
 	{
-		header('Location: lista_usuarios.php');
+		header('Location: lista_usuario.php');
 		mysqli_close($conection);
 	}
 	$iduser = $_REQUEST['id'];
@@ -72,12 +72,12 @@
 									FROM usuario u
 									INNER JOIN rol r
 									on u.rol = r.idrol
-									WHERE idusuario= $iduser ");
+									WHERE idusuario= $iduser and estatus = 1");
 	mysqli_close($conection);
 	$result_sql = mysqli_num_rows($sql);
 
 	if($result_sql == 0){
-		header('Location: lista_usuarios.php');
+		header('Location: lista_usuario.php');
 	}else{
 		$option = '';
 		while ($data = mysqli_fetch_array($sql)) {
@@ -115,12 +115,12 @@
 	<section id="container">
 		
 		<div class="form_register">
-			<h1>Actualizar usuario</h1>
+			<h1><i class="far fa-edit"></i> Actualizar usuario</h1>
 			<hr>
 			<div class="alert"><?php echo isset($alert) ? $alert : ''; ?></div>
 
 			<form action="" method="post">
-				<input type="hidden" name="idUsuario" value="<?php echo $iduser; ?>">
+				<input type="hidden" name="id" value="<?php echo $iduser; ?>">
 				<label for="nombre">Nombre</label>
 				<input type="text" name="nombre" id="nombre" placeholder="Nombre completo" value="<?php echo $nombre; ?>">
 				<label for="correo">Correo electrónico</label>
@@ -154,7 +154,8 @@
 						}
 					 ?>
 				</select>
-				<input type="submit" value="Actualizar usuario" class="btn_save">
+				
+				<button type="submit" class="btn_save"><i class="far fa-edit"></i> Actualizar usuario</button>
 
 			</form>
 

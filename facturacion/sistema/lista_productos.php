@@ -1,13 +1,6 @@
 <?php 
     session_start();
-    if($_SESSION['rol'] != 1)
-    {
-        header("location: ./");
-    }
-        
-
     include "..//conexion.php";
-
 ?>
 
 <!DOCTYPE html>
@@ -15,33 +8,35 @@
 <head>
 	<meta charset="UTF-8">
 	<?php include "includes/scripts.php"?>
-	<title>Lista de usuarios</title>
+	<title>Lista de Productos</title>
 </head>
 <body>
 	<?php include "includes/header.php"; ?>
 	<section id="container">
-		
-        <h1><i class="fas fa-users"></i> Lista de usuarios</h1>
-        <a href="registro_usuario.php" class="btn_new"><i class="far fa-user-circle"></i> Crear Usuario</a>
-        <form action="buscar_usuario.php"  method="get" class="form_search">
+        <i class="fas fa-cube fa-2x"></i>
+        <h1>Lista de productos</h1>
+        <a href="registro_producto.php" class="btn_new"><i class="fas fa-plus"></i> Registrar Producto</a>
+        
+        <form action="buscar_producto.php"  method="get" class="form_search">
             <input type="text" name="busqueda" id="busqueda" placeholder="Buscar">
             <button type="submit" class="btn_search"><i class="fas fa-search"></i></button>
 
         </form>
         <table>
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Acciones</th>
+                <th>CÓDIGO</th>
+                <th>DESCRIPCIÓN</th>
+                <th>PRECIO</th>
+                <th>EXISTENCIA</th>
+                <th>PROVEEDOR</th>
+                <th>FOTO</th>
+                <th>ACCIONES</th>
             </tr>
             
             <?php 
                 //Paginador//
 
-                $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM usuario WHERE estatus = 1");
+                $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM producto WHERE estatus = 1");
                 $reuslt_register = mysqli_fetch_array($sql_registe);
                 $total_registro = $reuslt_register['total_registro'];
 
@@ -57,10 +52,12 @@
                 $desde = ($pagina-1) * $por_pagina;
                 $total_paginas = ceil($total_registro / $por_pagina);
 
-                $query = mysqli_query($conection,"SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol 
-                    FROM usuario u INNER JOIN 
-                    rol r ON u.rol = r.idrol  WHERE estatus = 1 
-                    ORDER BY idusuario ASC LIMIT $desde,$por_pagina");
+                $query = mysqli_query($conection,"SELECT p.codproducto, p.descripcion, .p.precio, p.existencia, pr.proveedor, p.foto 
+                                                    FROM producto p 
+                                                    INNER JOIN proveedor pr
+                                                    ON p.proveedor = pr.codproveedor
+                                                    WHERE p.estatus = 1 
+                                                    ORDER BY p.codproducto ASC LIMIT $desde,$por_pagina");
 
                 mysqli_close($conection);
                 $reuslt = mysqli_num_rows($query);
@@ -68,34 +65,35 @@
                 if($reuslt > 0)
                 {
                     while ($data = mysqli_fetch_array($query)) {
-
+                        if($data['foto'] != 'img_producto.png'){
+                            $foto= 'img/'.$data['foto'];
+                        }else{
+                            $foto= 'img/'.$data['foto'];
+                        }
                 ?>
 
                     <tr>
-                        <td><?php echo $data['idusuario']; ?></td>
-                        <td><?php echo $data['nombre']; ?></td>
-                        <td><?php echo $data['correo']; ?></td>
-                        <td><?php echo $data['usuario']; ?></td>
-                        <td><?php echo $data['rol']; ?></td>
+                        <td><?php echo $data['codproducto']; ?></td>
+                        <td><?php echo $data['descripcion']; ?></td>
+                        <td><?php echo $data['precio']; ?></td>
+                        <td><?php echo $data['existencia']; ?></td>
+                        <td><?php echo $data['proveedor']; ?></td>
+                        <td class="img_producto"><img src="<?php echo $foto;?>" alt="<?php echo $data['descripcion'];?>"></td>
+                        <?php if($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) { ?>
                         <td>
-                            <a class="link_edit" href="editar_usuario.php?id=<?php echo $data['idusuario']; ?>"><i class="far fa-edit"></i> Editar</a>
-                            
-                            <?php 
-                            
-                                if($data['idusuario'] != 1) {
-                                
-                            ?>
+                            <a class="link_add add_product" product="<?php echo $data['codproducto']; ?>" href="#"><i class="fas fa-plus"></i> Agregar</a>
                             |
-                            <a class="link_delete" href="eliminar_confirmar_usuario.php?id=<?php echo $data['idusuario']; ?>"><i class="far fa-trash-alt"></i> Eliminar</a>
-                            <?php } ?>
+                            <a class="link_edit" href="editar_producto.php?id=<?php echo $data['codproducto']; ?>"><i class="far fa-edit"></i> Editar</a>
+                            
+                            |
+                            <a class="link_delete" href="eliminar_confirmar_producto.php?id=<?php echo $data['codproducto']; ?>"><i class="far fa-trash-alt"></i> Eliminar</a>
                         </td>
+                        <?php } ?>
                     </tr>
-            <?php            
-                    }
+                <?php
                 }
-
-            ?>
-
+            }
+                 ?>               
         </table>
         <div class="paginador">
                 <ul>

@@ -1,42 +1,32 @@
 <?php 
 session_start();
 
+if($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 )
+
+{
+    header("location: ./");
+}
+	
 include "../conexion.php";
 
 if (!empty($_POST)) 
 {
     $alert = '';
-    if (empty($_POST['nombre']) || empty($_POST['telefono']) || empty($_POST['direccion'])) 
+    if (empty($_POST['proveedor']) || empty($_POST['contacto']) || empty($_POST['telefono']) || empty($_POST['direccion'])) 
     {
         
         $alert = '<p class="msg_error">Todos los campos son obligatorios...<p/>';
     
     }else{
 
-        $nit = $_POST['nit'];
-        $nombre = $_POST['nombre'];
+        $codproveedor = $_POST['proveedor'];
+        $contacto = $_POST['contacto'];
         $telefono 	= $_POST['telefono'];
         $direccion 	= $_POST['direccion'];
         $usuario_id = $_SESSION['idUser'];
 
-        $result = 0;
-
-        if(is_numeric($nit) and $nit != 0) 
-        {
-            $query = mysqli_query($conection,"SELECT * FROM cliente WHERE nit = '$nit' ");
-            $result = mysqli_fetch_array($query); 
-        }
-        if($result > 0)
-        {
-            $alert = '<p class="msg_error">El número de nit ya exite...<p/>';    
-        }else{
-            if($nit == '')
-            {
-                $nit = 0;
-            }
-
-            $query_insert = mysqli_query($conection,"INSERT INTO cliente(nit,nombre,telefono,direccion,usuario_id) 
-                                        VALUES('$nit','$nombre','$telefono','$direccion','$usuario_id')");
+            $query_insert = mysqli_query($conection,"INSERT INTO proveedor(proveedor,contacto,telefono,direccion,usuario_id) 
+                                        VALUES('$codproveedor','$contacto','$telefono','$direccion','$usuario_id')");
             if($query_insert) 
             {
                 $alert = '<p class="msg_save">Cliente guardado correctamente...<p/>';   
@@ -46,7 +36,6 @@ if (!empty($_POST))
 
         }
         
-    }
     mysqli_close($conection);
 }
 
@@ -58,7 +47,7 @@ if (!empty($_POST))
 <head>
 <meta charset="UTF-8">
 <?php include "includes/scripts.php"; ?>
-<title>Registro Cliente</title>
+<title>Registro Proveedor</title>
 </head>
 <body>
 
@@ -68,17 +57,18 @@ if (!empty($_POST))
     
 
     <div class="form_register">
-        <i color="#478ba2" class="fas fa-address-card fa-2x"></i>
-        <h1>Registro de cliente</h1>
+        <i color="#478ba2" class="far fa-building fa-2x"></i>
+
+        <h1> Registro Proveedor</h1>
         <hr>
         <div class="alert"><?php echo isset($alert) ? $alert : ''; ?></div>
 
         <form action="" method="POST">
-            <label for="nit">NIT</label>
-            <input type="number" name="nit" id="nit" placeholder="Número de NIT">
+            <label for="proveedor">Proveedor</label>
+            <input type="text" name="proveedor" id="proveedor" placeholder="Nombre del proveedor">
 
-            <label for="nombre">Nombre</label>
-            <input type="text" name="nombre" id="nombre" placeholder="Nombre completo">
+            <label for="contacto">Contacto</label>
+            <input type="text" name="contacto" id="contacto" placeholder="Nombre del contacto">
 
             <label for="telefono">Teléfono</label>
             <input type="number" name="telefono" id="telefono" placeholder="Teléfono">
@@ -86,8 +76,7 @@ if (!empty($_POST))
             <label for="direccion">Dirección</label>
             <input type="text" name="direccion" id="direccion" placeholder="Dirección Completa">
 
-            <button  type="submit" value="Crear cliente" class="btn_save"><i class="far fa-save"></i> Guardar Cliente</button>
-            
+            <button  type="submit" value="Guardar Proveedor" class="btn_save"><i class="far fa-save"></i> Crear Proveedor</button>
         </form>
 
     </div>

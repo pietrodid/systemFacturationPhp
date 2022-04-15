@@ -208,6 +208,9 @@ input,select{
 	border: 0;
 	cursor: pointer;
 	margin: 15px auto;
+	display: block;
+    border-radius: 10px;
+    margin-top: 25px;
 }
 .alert{
 	width: 100%;
@@ -229,6 +232,8 @@ input,select{
 #container h1{
 	font-size: 35px;
 	display: inline-block;
+	margin-top: 20px;
+	padding: 0 10px;
 }
 .btn_new{
 	display: inline-block;
@@ -256,6 +261,9 @@ table tr:nth-child(odd){
 table td{
 	padding: 10px;
 }
+.link_add{
+	color: #64b13c;
+}
 .link_edit{
 	color: #0ca4ce;
 }
@@ -264,6 +272,7 @@ table td{
 }
 .data_delete{
 	text-align: center;
+	margin-top: 30px;
 }
 .data_delete h2{
 	font-size: 12pt;
@@ -275,7 +284,7 @@ table td{
 }
 .btn_cancel,.btn_ok{
 	width: 124px;
-	background: #478ba2;
+	background: red;
 	color: #FFF;
 	display: inline-block;
 	padding: 5px;
@@ -339,8 +348,109 @@ table td{
 .form_search .btn_search{
 	background: #1faac8;
 	color: #FFF;
-	padding: 0 20px;
+	padding: 10px;
 	border: 0;
 	cursor: pointer;
 	margin-left: 10px;
+	border-radius: 5px;
+}
+.prevPhoto{
+    display: flex;
+    justify-content: space-between;
+    width: 160px;
+    height: 150px;
+    border: 1px solid #CCC;
+    position: relative;
+    cursor: pointer;
+    background: url(../img/uploads/user.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    margin: auto;
+}
+.prevPhoto label{
+	cursor: pointer;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+}
+.prevPhoto img{
+	width: 100%;
+	height: 100%;
+}
+.upimg, .notBlock{
+	display: none !important;
+}
+.errorArchivo{
+	font-size: 16px;
+	font-family: arial;
+	color: #cc0000;
+	text-align: center;
+	font-weight: bold; 
+	margin-top: 10px;
+}
+.delPhoto.notBlock{
+	color: #FFF;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	background: red;
+	position: absolute;
+	right: -10px;
+	top: -10px;
+	z-index: 10;
+}
+
+/*Productos*/
+
+.img_producto img{
+	width: 60px;
+	height: auto;
+	margin: auto;
+}
+.imgProductoDelete{
+	width: 175px;
+}
+.modal{
+	position: fixed;
+	width: 100%;
+	height: 100vh;
+	background: rgba(0,0,0,0.81);
+	display: none;
+}
+.bodyModal{
+	width: 100%;
+	height: 100%;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	
+}
+.modal h1{
+	color: #0E725D;
+	text-transform: uppercase;
+
+}
+.modal h2{
+	text-transform: uppercase;
+	margin-top: 15px;
+}
+#form_add_product{
+	width: 420px;
+	text-align: center;
+
 }

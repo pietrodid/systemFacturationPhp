@@ -1,10 +1,5 @@
 <?php 
     session_start();
-    if($_SESSION['rol'] != 1)
-    {
-        header("location: ./");
-    }
-        
     include "..//conexion.php"
 
 ?>
@@ -14,7 +9,7 @@
 <head>
 	<meta charset="UTF-8">
 	<?php include "includes/scripts.php"?>
-	<title>Lista de usuarios</title>
+	<title>Lista de clientes</title>
 </head>
 <body>
 	<?php include "includes/header.php"; ?>
@@ -24,49 +19,39 @@
             $busqueda = strtolower($_REQUEST['busqueda']);
             if(empty($busqueda))
             {
-                header('location: lista_usuario.php');
+                header('location: lista_clientes.php');
                 mysqli_close($conection);
             }
         ?>
-        <h1><i class="fas fa-users"></i> Lista de usuarios</h1>
-        <a href="registro_usuario.php" class="btn_new"><i class="far fa-user-circle"></i> Crear Usuario</a>
-        <form action="buscar_usuario.php"  method="get" class="form_search">
-            <input type="text" name="busqueda" id="busqueda" placeholder="Buscar">
-            <button type="submit" class="btn_search"><i class="fas fa-search"></i></button>
+        <i class="fas fa-users fa-3x"></i> 
+        <h1>Lista de clientes</h1>
+        <a href="registro_cliente.php" class="btn_new"><i class="fas fa-plus"></i> Crear Cliente</a>
 
+        <form action="buscar_cliente.php"  method="get" class="form_search">
+            <input type="text" name="busqueda" id="busqueda" placeholder="Buscar" value="<?php echo $busqueda; ?> ">
+            <button type="submit" class="btn_search"><i class="fas fa-search"></i></button>
 
         </form>
         <table>
             <tr>
                 <th>ID</th>
+                <th>Nit</th>
                 <th>Nombre</th>
-                <th>Correo</th>
-                <th>Usuario</th>
-                <th>Rol</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
                 <th>Acciones</th>
             </tr>
             
             <?php 
-                //Buscador, aqui se esta haciendo petecion por medio de el tipo de rol//
-                $rol = '';
-                if($busqueda == 'administrador')
-                {
-                    $rol = "OR rol LIKE '%1%'";
-
-                }elseif ($busqueda == 'supervisor'){
-                    $rol = "OR rol LIKE '%2%'";
-
-                }elseif ($busqueda == 'vendedor'){
-                    $rol = "OR rol LIKE '%3%'";
-                }
-
-                $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM usuario 
-                                                            WHERE ( idusuario LIKE'%$busqueda%' OR
-                                                                    nombre LIKE '%$busqueda%' OR
-                                                                    correo LIKE '%$busqueda%' OR
-                                                                    usuario LIKE '%$busqueda%' 
-                                                                    $rol )
-                                                            AND estatus = 1 ");
+                //Paginador//
+                $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM cliente 
+                                                        WHERE (idcliente LIKE '%$busqueda%' OR 
+                                                                nit LIKE '%$busqueda%' OR
+                                                                nombre LIKE '%$busqueda%' OR
+                                                                telefono LIKE '%$busqueda%' OR
+                                                                direccion LIKE '%$busqueda%') 
+                                                                AND estatus = 1");
+                                                           
                                                             
                 $reuslt_register = mysqli_fetch_array($sql_registe);
                 $total_registro = $reuslt_register['total_registro'];
@@ -83,16 +68,16 @@
                 $desde = ($pagina-1) * $por_pagina;
                 $total_paginas = ceil($total_registro / $por_pagina);
 
-                $query = mysqli_query($conection,"SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol 
-                    FROM usuario u INNER JOIN rol r ON u.rol = r.idrol  
+                $query = mysqli_query($conection,"SELECT * 
+                    FROM cliente  
                     WHERE 
-                    (   u.idusuario LIKE '%$busqueda%' OR
-                        u.nombre LIKE '%$busqueda%' OR
-                        u.correo LIKE '%$busqueda%' OR
-                        u.usuario LIKE '%$busqueda%' OR
-                        r.rol LIKE '%$busqueda%' )
+                    (   idcliente LIKE '%$busqueda%' OR
+                        nit LIKE '%$busqueda%' OR
+                        nombre LIKE '%$busqueda%' OR
+                        telefono LIKE '%$busqueda%' OR
+                        direccion LIKE '%$busqueda%' )
                     AND
-                    estatus = 1 ORDER BY u.idusuario ASC LIMIT $desde,$por_pagina"); 
+                    estatus = 1 ORDER BY idcliente ASC LIMIT $desde,$por_pagina"); 
                     
                 mysqli_close($conection);
                 $reuslt = mysqli_num_rows($query);
@@ -104,21 +89,16 @@
                 ?>
 
                     <tr>
-                        <td><?php echo $data['idusuario']; ?></td>
+                        <td><?php echo $data['idcliente']; ?></td>
+                        <td><?php echo $data['nit']; ?></td>
                         <td><?php echo $data['nombre']; ?></td>
-                        <td><?php echo $data['correo']; ?></td>
-                        <td><?php echo $data['usuario']; ?></td>
-                        <td><?php echo $data['rol']; ?></td>
+                        <td><?php echo $data['telefono']; ?></td>
+                        <td><?php echo $data['direccion']; ?></td>
                         <td>
-                            <a class="link_edit" href="editar_usuario.php?id=<?php echo $data['idusuario']; ?>"><i class="far fa-edit"></i> Editar</a>
-                            
-                            <?php 
-                            
-                                if($data['idusuario'] != 1) {
-                                
-                            ?>
+                            <a class="link_edit" href="editar_cliente.php?id=<?php echo $data['idcliente']; ?>"><i class="far fa-edit"></i> Editar</a>
+                            <?php if($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) { ?>
                             |
-                            <a class="link_delete" href="eliminar_confirmar_usuario.php?id=<?php echo $data['idusuario']; ?>"><i class="far fa-trash-alt"></i> Eliminar</a>
+                            <a class="link_delete" href="eliminar_confirmar_cliente.php?id=<?php echo $data['idcliente']; ?>"><i class="far fa-trash-alt"></i> Eliminar</a>
                             <?php } ?>
                         </td>
                     </tr>

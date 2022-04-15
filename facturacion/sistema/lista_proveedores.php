@@ -1,13 +1,6 @@
 <?php 
     session_start();
-    if($_SESSION['rol'] != 1)
-    {
-        header("location: ./");
-    }
-        
-
     include "..//conexion.php";
-
 ?>
 
 <!DOCTYPE html>
@@ -15,33 +8,34 @@
 <head>
 	<meta charset="UTF-8">
 	<?php include "includes/scripts.php"?>
-	<title>Lista de usuarios</title>
+	<title>Lista de Proveedores</title>
 </head>
 <body>
 	<?php include "includes/header.php"; ?>
 	<section id="container">
-		
-        <h1><i class="fas fa-users"></i> Lista de usuarios</h1>
-        <a href="registro_usuario.php" class="btn_new"><i class="far fa-user-circle"></i> Crear Usuario</a>
-        <form action="buscar_usuario.php"  method="get" class="form_search">
+        <i class="fas fa-users fa-3x"></i> 
+        <h1>Lista de proveedores</h1>
+        <a href="registro_proveedor.php" class="btn_new"><i class="fas fa-plus"></i> Agregar Proveedor</a>
+        
+        <form action="buscar_proveedor.php"  method="get" class="form_search">
             <input type="text" name="busqueda" id="busqueda" placeholder="Buscar">
             <button type="submit" class="btn_search"><i class="fas fa-search"></i></button>
 
         </form>
         <table>
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Acciones</th>
+                <th>PROVEEDOR</th>
+                <th>CONTACTO</th>
+                <th>TELEFONO</th>
+                <th>DIRECCIÓN</th>
+                <th>FECHA</th>
+                <th>ACCIONES</th>
             </tr>
             
             <?php 
                 //Paginador//
 
-                $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM usuario WHERE estatus = 1");
+                $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM proveedor WHERE estatus = 1");
                 $reuslt_register = mysqli_fetch_array($sql_registe);
                 $total_registro = $reuslt_register['total_registro'];
 
@@ -57,10 +51,8 @@
                 $desde = ($pagina-1) * $por_pagina;
                 $total_paginas = ceil($total_registro / $por_pagina);
 
-                $query = mysqli_query($conection,"SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol 
-                    FROM usuario u INNER JOIN 
-                    rol r ON u.rol = r.idrol  WHERE estatus = 1 
-                    ORDER BY idusuario ASC LIMIT $desde,$por_pagina");
+                $query = mysqli_query($conection,"SELECT * FROM proveedor WHERE estatus = 1 
+                    ORDER BY codproveedor ASC LIMIT $desde,$por_pagina");
 
                 mysqli_close($conection);
                 $reuslt = mysqli_num_rows($query);
@@ -68,34 +60,27 @@
                 if($reuslt > 0)
                 {
                     while ($data = mysqli_fetch_array($query)) {
-
+                
                 ?>
 
                     <tr>
-                        <td><?php echo $data['idusuario']; ?></td>
-                        <td><?php echo $data['nombre']; ?></td>
-                        <td><?php echo $data['correo']; ?></td>
-                        <td><?php echo $data['usuario']; ?></td>
-                        <td><?php echo $data['rol']; ?></td>
+                        <td><?php echo $data['proveedor']; ?></td>
+                        <td><?php echo $data['contacto']; ?></td>
+                        <td><?php echo $data['telefono']; ?></td>
+                        <td><?php echo $data['direccion']; ?></td>
+                        <td><?php echo $data['dateadd']; ?></td>
                         <td>
-                            <a class="link_edit" href="editar_usuario.php?id=<?php echo $data['idusuario']; ?>"><i class="far fa-edit"></i> Editar</a>
-                            
-                            <?php 
-                            
-                                if($data['idusuario'] != 1) {
-                                
-                            ?>
+                            <a class="link_edit" href="editar_proveedor.php?id=<?php echo $data['codproveedor']; ?>"><i class="far fa-edit"></i> Editar</a>
+                            <?php if($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) { ?>
                             |
-                            <a class="link_delete" href="eliminar_confirmar_usuario.php?id=<?php echo $data['idusuario']; ?>"><i class="far fa-trash-alt"></i> Eliminar</a>
+                            <a class="link_delete" href="eliminar_confirmar_proveedor.php?id=<?php echo $data['codproveedor']; ?>"><i class="far fa-trash-alt"></i> Eliminar</a>
                             <?php } ?>
                         </td>
                     </tr>
-            <?php            
-                    }
+                <?php
                 }
-
-            ?>
-
+            }
+                 ?>               
         </table>
         <div class="paginador">
                 <ul>

@@ -1,6 +1,6 @@
 <?php 
 session_start();
-if($_SESSION['rol'] != 1)
+if($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2)
 {
     header("location: ./");
 }
@@ -9,27 +9,24 @@ include "../conexion.php";
 
 if (!empty($_POST)) 
 {
-
-    if($idusuario == 1) 
+    if(empty($_POST['idcliente']))     
     {
-        header('location: lista_usuario.php');
-		mysqli_close($conection);
-        exit;
+        header("location: lista_clientes.php");
+        mysqli_close($conection);
     }
 
-	$idusuario = $_POST['idusuario'];
-
+	$idcliente = $_POST['idcliente'];
 
 	//$query_delete = mysqli_query($conection,"DELETE FROM usuario WHERE idusuario = $idusuario"); //QUERY QUE FUNCIONA PARA ELIMINAR REGISTROS EN LAS BBDD----------
 
 
 	//QUERY QUE SOLO ELIMINA DEL SISTEMA AL REGISTRO PERO EN LA BBDD SOLO CAMBIA A UN ESTATUS DE INACTIVO
-	$query_delete = mysqli_query($conection,"UPDATE usuario SET estatus = 0 WHERE idusuario = $idusuario");
+	$query_delete = mysqli_query($conection,"UPDATE cliente SET estatus = 0 WHERE idcliente = $idcliente");
 	mysqli_close($conection);
 	if ($query_delete)
 	{
 
-		header('Location: lista_usuario.php');
+		header('Location: lista_clientes.php');
 	
 	}else{
 
@@ -39,22 +36,16 @@ if (!empty($_POST))
 
 }
 
-if (empty($_REQUEST['id'] || $_REQUEST['id'] == 1 )) 
+if (empty($_REQUEST['id'])) 
 {
 
-	header('Location: lista_usuario.php');
+	header('Location: lista_clientes.php');
 	mysqli_close($conection);
 	
 }else{
 
-	$idusuario = $_REQUEST['id'];
-
-	$query = mysqli_query($conection,"SELECT u.nombre,u.usuario,r.rol
-		FROM usuario u
-		INNER JOIN
-		rol r
-		ON u.rol = r.idrol
-		WHERE u.idusuario = $idusuario");
+	$idcliente = $_REQUEST['id'];
+	$query = mysqli_query($conection,"SELECT * FROM cliente WHERE idcliente = $idcliente");
 
 	mysqli_close($conection);
 	$result = mysqli_num_rows($query);
@@ -63,13 +54,12 @@ if (empty($_REQUEST['id'] || $_REQUEST['id'] == 1 ))
 	{
 		while ($data = mysqli_fetch_array($query)){
 
+            $nit = $data['nit'];
 			$nombre = $data['nombre'];
-			$usuario = $data['usuario'];
-			$rol = $data['rol'];
 
 		}
 	}else{
-		header('Location: lista_usuario.php');
+		header('Location: lista_clientes.php');
 	}
 }
 
@@ -81,7 +71,7 @@ if (empty($_REQUEST['id'] || $_REQUEST['id'] == 1 ))
 <head>
 	<meta charset="UTF-8">
 	<?php include "includes/scripts.php"; ?>
-	<title>Eliminar usuario</title>
+	<title>Eliminar cliente</title>
 </head>
 <body>
 
@@ -91,16 +81,14 @@ if (empty($_REQUEST['id'] || $_REQUEST['id'] == 1 ))
 		
         <div class="data_delete">
 			
-			<i class="far fa-window-close fa-3x"></i>
 			<h2>¿Estas seguro de querer eliminar el siguiente registo?</h2>
+			
+            <p>NIT: <span><?php echo $nit; ?></span></p>
 			<p>Nombre: <span><?php echo $nombre; ?></span></p>
-			<p>Usuario: <span><?php echo $usuario; ?></span></p>
-			<p>Tipo de usuario: <span><?php echo $rol; ?></span></p>
-
 			<form action="" method="POST">
 
-				<input type="hidden" name="idusuario" value="<?php echo $idusuario; ?>">
-				<a href="lista_usuario.php" class="btn_cancel"><i class="fas fa-ban"></i> Cancelar</a>
+				<input type="hidden" name="idcliente" value="<?php echo $idcliente; ?>">
+				<a href="lista_clientes.php" class="btn_cancel"><i class="fas fa-ban"></i> Cancelar</a>
 				<button type="submit" class="btn_ok"><i class="fas fa-check-circle fa-lg"></i>  Aceptar</button>
 
 			</form>

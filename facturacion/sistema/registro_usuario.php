@@ -25,7 +25,7 @@ if (!empty($_POST))
         $rol 	= $_POST['rol'];
 
         $query = mysqli_query($conection,"SELECT * FROM usuario WHERE usuario = '$user' OR correo = '$email'");
-        mysqli_close($conection);
+        
         $result = mysqli_fetch_array($query);
 
         if ($result > 0) 
@@ -70,7 +70,7 @@ if (!empty($_POST))
 
     <div class="form_register">
         
-        <h1>Registro de usuario</h1>
+        <h1><i class="fas fa-users"></i> Registro de usuario</h1>
         <hr>
         <div class="alert"><?php echo isset($alert) ? $alert : ''; ?></div>
 
@@ -120,7 +120,7 @@ if (!empty($_POST))
 
             </select>
 
-            <input type="submit" value="Crear usuario" class="btn_save">
+            <button  type="submit" value="Crear usuario" class="btn_save"><i class="far fa-save"></i> Crear Usuario</button>
         </form>
 
     </div>
