@@ -43,6 +43,9 @@
 						<li><a href="lista_productos.php"><i class="fas fa-cube"></i> Lista de Productos</a></li>
 					</ul>
 				</li>
+				<?php 
+				if($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2){	
+				?>
 				<li class="principal">
 					<a href="#"><i class="fas fa-calculator"></i> Ventas</a>
 					<ul>
@@ -50,5 +53,6 @@
 						<li><a href="ventas.php"><i class="fas fa-copy"></i> Ventas</a></li>
 					</ul>
 				</li>
+				<?php } ?>
 			</ul>
 		</nav>
