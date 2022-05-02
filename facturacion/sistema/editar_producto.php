@@ -9,28 +9,31 @@ if($_SESSION['rol'] != 1 && $_SESSION['rol'] != 2 )
 	
 include "../conexion.php";
 
-if (!empty($_POST)) 
+if(!empty($_POST))
+//print_r($_POST);exit; 
 {
     $alert = '';
-    if (empty($_POST['proveedor']) || empty($_POST['producto']) || empty($_POST['precio']) || $_POST['precio'] <= 0 || $_POST['cantidad'] <= 0 || empty($_POST['cantidad'])) 
+    if(empty($_POST['proveedor']) || empty($_POST['producto']) || empty($_POST['precio']) || empty($_POST['foto_actual']) || empty($_POST['foto_remove'])) 
     {
         
         $alert = '<p class="msg_error">Todos los campos son obligatorios...<p/>';
     
     }else{
 
+        $codproducto = $_POST['id'];
         $proveedor = $_POST['proveedor'];
         $producto = $_POST['producto'];
         $precio 	= $_POST['precio'];
-        $cantidad 	= $_POST['cantidad'];
-        $usuario_id = $_SESSION['idUser'];
+        $img_producto 	= $_POST['foto_actual'];
+        $imgRemove = $_POST['foto_remove'];
 
         $foto = $_FILES['foto'];
         $nombre_foto = $foto['name'];
         $type = $foto['type'];
         $url_temp = $foto['tmp_name'];
         
-        $img_producto = 'img_producto.png';
+        //$upd = '';
+
 
         if($nombre_foto != '')
         {
@@ -38,20 +41,31 @@ if (!empty($_POST))
             $img_nombre = 'img_'.md5(date('d-m-y H:m:s'));
             $img_producto = $img_nombre.'.png';
             $src = $destino.$img_producto;
+        }else{
+            if($_POST['foto_actual'] != $_POST['foto_remove']){
+                $img_producto = 'img_producto.png';
+            }
         }
 
-            $query_insert = mysqli_query($conection,"INSERT INTO producto 
-                                        (proveedor,descripcion,precio,existencia,usuario_id, foto) 
-                                        VALUES('$proveedor','$producto','$precio','$cantidad','$usuario_id','$img_producto')");
-            if($query_insert) 
-            {
+            $query_update = mysqli_query($conection,"UPDATE producto 
+                                                    SET descripcion = '$producto',
+                                                        proveedor = $proveedor, 
+                                                        precio = $precio, 
+                                                        foto = '$img_producto' 
+                                                    WHERE codproducto = $codproducto ");
+            if($query_update) {
+                
+                if(($nombre_foto != '' && ($_POST['foto_actual'] != 'img_producto.png')) || ($_POST['foto_actual'] != $_POST['foto_remove']))
+                {
+                    unlink('img/'.$_POST['foto_actual']);
+                }
                 if($nombre_foto != '')
                 {
                     move_uploaded_file($url_temp,$src);
                 }
-                $alert = '<p class="msg_save">Producto guardado correctamente...<p/>';   
+                $alert = '<p class="msg_save">Producto actualizado correctamente...<p/>';   
             }else{
-                $alert = '<p class="msg_error">Error al guardar el producto...<p/>';
+                $alert = '<p class="msg_error">Error al actualizar el producto...<p/>';
             }
 
         }
@@ -59,6 +73,35 @@ if (!empty($_POST))
    
 }
 
+//Validar producto//
+if(empty($_REQUEST['id'])){
+    header("location: lista_productos.php");
+}else{
+    $id_producto = $_REQUEST['id'];
+    if(!is_numeric($id_producto))
+    header("location: lista_productos.php");
+}
+
+$query_producto = mysqli_query($conection,"SELECT  p.codproducto,p.descripcion,p.precio,p.foto,pr.codproveedor,pr.proveedor 
+                                                FROM producto p
+                                                INNER JOIN proveedor pr 
+                                                ON p.proveedor = pr.codproveedor 
+                                                WHERE p.codproducto = $id_producto AND p.estatus = 1");
+$result_prducto = mysqli_num_rows($query_producto);
+
+$foto = '';
+$classRemove = 'notBlock';
+
+if($result_prducto > 0){
+    $data_producto = mysqli_fetch_assoc($query_producto);
+
+    if($data_producto['foto'] != 'img_producto.png'){
+        $classRemove = '';
+        $foto = '<img id="img" src="img/'.$data_producto['foto'].'" alt="Produto">';
+    }
+}else{
+    header("location: lista_productos.php");    
+}
 ?>
 
 
@@ -67,7 +110,7 @@ if (!empty($_POST))
 <head>
 <meta charset="UTF-8">
 <?php include "includes/scripts.php"; ?>
-<title>Registro Producto</title>
+<title>Actualizar Producto</title>
 </head>
 <body>
 
@@ -76,14 +119,17 @@ if (!empty($_POST))
 <section id="container">
     
     <div class="form_register">
-        <h1><i class="fas fa-tag"></i> Registro Producto</h1>
+        <h1><i class="fas fa-tag"></i> Actualizar Producto</h1>
         <hr>
         <div class="alert"><?php echo isset($alert) ? $alert : ''; ?></div>
 
-        <form enctype="multipart/form-data" action="" method="POST">
-            
+        <form action="" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<?php echo $data_producto['codproducto']; ?>">
+        <input type="hidden" name="foto_actual" id="foto_actual" value="<?php echo $data_producto['foto']; ?>">
+        <input type="hidden" name="foto_remove" id="foto_remove" value="<?php echo $data_producto['foto']; ?>">
+
         <label for="proveedor">Proveedor</label>
-        
+
                 <?php 
                     $query_proveedor= mysqli_query($conection,"SELECT codproveedor, proveedor FROM proveedor 
                                                     WHERE estatus = 1 ORDER BY proveedor ASC");
@@ -91,12 +137,11 @@ if (!empty($_POST))
                     $result_proveedor= mysqli_num_rows($query_proveedor);
                     
                 ?>
-                <select name="proveedor" id="proveedor">
+                <select name="proveedor" id="proveedor" class="notItemOne">
+                    <option value="<?php echo $data_producto['codproveedor']; ?>" selected><?php echo $data_producto['proveedor']; ?></option>
                 <?php 
                     if($result_proveedor > 0) {
                         while($proveedor = mysqli_fetch_array($query_proveedor)){
-                    
-            
                     
                 ?>
                     <option value="<?php echo $proveedor['codproveedor']; ?>"><?php echo $proveedor['proveedor']; ?></option>
@@ -108,19 +153,17 @@ if (!empty($_POST))
             </select>
 
             <label for="producto">Producto</label>
-            <input type="text" name="producto" id="producto" placeholder="Nombre del producto">
+            <input type="text" name="producto" id="producto" placeholder="Nombre del producto" value="<?php echo $data_producto['descripcion']; ?>">
 
             <label for="precio">Precio</label>
-            <input type="number" name="precio" id="precio" placeholder="Precio del producto">
-
-            <label for="cantidad">Cantidad</label>
-            <input type="number" name="cantidad" id="cantidad" placeholder="Cantidad del producto">
+            <input type="number" name="precio" id="precio" placeholder="Precio del producto" value="<?php echo $data_producto['precio']; ?>">
             
             <div class="photo">
                 <label for="foto">Foto</label>
                     <div class="prevPhoto">
-                    <span class="delPhoto notBlock">x</span>
+                    <span class="delPhoto <?php echo $classRemove; ?>">x</span>
                     <label for="foto"></label>
+                    <?php echo $foto; ?>
                     </div>
                     <div class="upimg">
                     <input type="file" name="foto" id="foto">
@@ -128,7 +171,7 @@ if (!empty($_POST))
                     <div id="form_alert"></div>
             </div>
 
-            <button  type="submit" value="Guardar Proveedor" class="btn_save"><i class="far fa-save"></i> Guardar producto</button>
+            <button  type="submit" value="Guardar Proveedor" class="btn_save"><i class="far fa-save"></i> Actualizar producto</button>
         </form>
 
     </div>

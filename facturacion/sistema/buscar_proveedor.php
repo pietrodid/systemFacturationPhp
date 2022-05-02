@@ -31,7 +31,7 @@
         <i class="fas fa-users fa-3x"></i> <h1>Lista de proveedores</h1>
         <a href="registro_proveedor.php" class="btn_new"><i class="fas fa-plus"></i> Agregar Proveedor</a>
 
-        <form action="buscar_proveedor.php"  method="get" class="form_search">
+        <form action="buscar_productos.php"  method="get" class="form_search">
             <input type="text" name="busqueda" id="busqueda" placeholder="Buscar" value="<?php echo $busqueda; ?>">
             <button type="submit" class="btn_search"><i class="fas fa-search"></i></button>
 

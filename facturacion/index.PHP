@@ -29,7 +29,11 @@ if (!empty($_SESSION['active']))
 			/* con MD5 encriptamos el contenido de la contraseña */			
 			$pass = md5(mysqli_real_escape_string($conection,$_POST['clave']));
 
-			$query = mysqli_query($conection,"SELECT * FROM usuario WHERE usuario = '$user' AND clave = '$pass' AND estatus = 1");
+			$query = mysqli_query($conection,"SELECT u.idusuario,u.nombre,u.correo,u.usuario,r.idrol,r.rol 
+											  FROM usuario u
+											  INNER JOIN rol r
+											  ON u.rol = r.idrol 
+											  WHERE u.usuario = '$user' AND u.clave = '$pass' AND estatus = 1");
 			$query_update = mysqli_query($conection, "UPDATE usuario SET hora_conexion='$actual',online='0' WHERE usuario= '$user'");
 			$result = mysqli_num_rows($query);
 			mysqli_close($conection);
@@ -42,7 +46,8 @@ if (!empty($_SESSION['active']))
 				$_SESSION['nombre'] = $data['nombre'];
 				$_SESSION['email'] 	= $data['correo'];
 				$_SESSION['user']	= $data['usuario'];
-				$_SESSION['rol'] 	= $data['rol'];
+				$_SESSION['rol'] 	= $data['idrol'];
+				$_SESSION['rol_name'] 	= $data['rol'];
 
 				header('Location: sistema/');
 

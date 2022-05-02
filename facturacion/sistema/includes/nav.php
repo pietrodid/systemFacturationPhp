@@ -1,6 +1,6 @@
 <nav>
 			<ul>
-				<li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+				<li><a href="index.php"><i class="fas fa-home"></i> Inicio</a></li>
 				<?php 
 					if($_SESSION['rol'] == 1){
 				?>		
@@ -44,10 +44,10 @@
 					</ul>
 				</li>
 				<li class="principal">
-					<a href="#"><i class="fas fa-calculator"></i> Facturas</a>
+					<a href="#"><i class="fas fa-calculator"></i> Ventas</a>
 					<ul>
-						<li><a href="#"><i class="fas fa-file-alt"></i> Nuevo Factura</a></li>
-						<li><a href="#"><i class="fas fa-copy"></i> Facturas</a></li>
+						<li><a href="nueva_venta.php"><i class="fas fa-file-alt"></i> Nueva venta</a></li>
+						<li><a href="ventas.php"><i class="fas fa-copy"></i> Ventas</a></li>
 					</ul>
 				</li>
 			</ul>

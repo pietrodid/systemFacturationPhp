@@ -95,8 +95,8 @@
                     if($pagina != 1) 
                     {
                 ?>      
-                    <li><a href="?pagina=<?php echo 1; ?>"><i class="fas fa-caret-left fa-lg"></i></a></li>
-                    <li><a href="?pagina=<?php echo $pagina-1; ?>"><i class="fas fa-backward"></i></a></li>
+                    <li><a href="?pagina=<?php echo $pagina-1; ?>"><i class="fas fa-caret-left fa-lg"></i></a></li>
+                    <li><a href="?pagina=<?php echo 1; ?>"><i class="fas fa-backward"></i></a></li>
                 <?php 
                     }
                     for($i=1; $i <= $total_paginas; $i++) {
